@@ -154,10 +154,7 @@ func getCommands() []command {
 		log.Fatalln(err.Error())
 	}
 	byteValue, _ := ioutil.ReadAll(jsonFile)
-	err = json.Unmarshal(byteValue, &c)
-	if err != nil {
-		log.Fatalln("Emply list, please add commands by run `mcli add`")
-	}
+	json.Unmarshal(byteValue, &c)
 	return c
 }
 
