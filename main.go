@@ -26,6 +26,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "mcli"
 	app.Usage = "cmd shortcut menu"
+	app.Version = os.Getenv("APP_VERSION")
 	app.Action = func(c *cli.Context) error {
 		index := selectCommand()
 		subprocess(getCommands()[index].Cmd)
