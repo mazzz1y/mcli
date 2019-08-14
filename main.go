@@ -15,7 +15,6 @@ import (
 )
 
 var configFilePath = expandHomedir("~/.mcli.json")
-var cmdList = getCommands()
 
 type command struct {
 	Name string `json:"name"`
@@ -23,12 +22,13 @@ type command struct {
 }
 
 func main() {
+	os.OpenFile(configFilePath, os.O_RDONLY|os.O_CREATE, 0666)
 	app := cli.NewApp()
 	app.Name = "mcli"
 	app.Usage = "cmd shortcut menu"
 	app.Action = func(c *cli.Context) error {
 		index := selectCommand()
-		subprocess(cmdList[index].Cmd)
+		subprocess(getCommands()[index].Cmd)
 		return nil
 	}
 	app.Commands = []cli.Command{
@@ -101,7 +101,7 @@ func selectCommand() int {
 	}
 
 	searcher := func(input string, index int) bool {
-		command := cmdList[index]
+		command := getCommands()[index]
 		name := strings.Replace(strings.ToLower(command.Name), " ", "", -1)
 		cmd := strings.Replace(strings.ToLower(command.Cmd), " ", "", -1)
 		input = strings.Replace(strings.ToLower(input), " ", "", -1)
@@ -111,7 +111,7 @@ func selectCommand() int {
 
 	prompt := promptui.Select{
 		Label:     "Select command:",
-		Items:     cmdList,
+		Items:     getCommands(),
 		Templates: templates,
 		Size:      10,
 		Searcher:  searcher,
@@ -156,7 +156,7 @@ func getCommands() []command {
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 	err = json.Unmarshal(byteValue, &c)
 	if err != nil {
-		log.Fatalln(err.Error())
+		log.Fatalln("Emply list, please add commands by run `mcli add`")
 	}
 	return c
 }
