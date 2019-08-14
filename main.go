@@ -15,6 +15,7 @@ import (
 )
 
 var configFilePath = expandHomedir("~/.mcli.json")
+var version = "git"
 
 type command struct {
 	Name string `json:"name"`
@@ -26,7 +27,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "mcli"
 	app.Usage = "cmd shortcut menu"
-	app.Version = os.Getenv("APP_VERSION")
+	app.Version = version
 	app.Action = func(c *cli.Context) error {
 		index := selectCommand()
 		subprocess(getCommands()[index].Cmd)
