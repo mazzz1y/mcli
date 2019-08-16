@@ -1,4 +1,4 @@
-module mcli
+module github.com/dmirubtsov/mcli
 
 go 1.12
 
