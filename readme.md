@@ -4,4 +4,9 @@ A simple shortcut menu for shell commands
 
 ## Installation
 
-TODO
+#### macOS
+
+```
+brew tap dmirubtsov/tap
+brew install mcli
+```
