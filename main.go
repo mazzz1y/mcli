@@ -99,7 +99,6 @@ func selectCommand() int {
 		Active:   "> {{ .Name | cyan }}",
 		Inactive: "  {{ .Name | cyan }}",
 		Selected: "> {{ .Cmd }}",
-		Details:  `{{ "Command: " | faint }}{{ .Cmd }}`,
 	}
 
 	searcher := func(input string, index int) bool {
@@ -130,8 +129,7 @@ func selectCommand() int {
 }
 
 func subprocess(command string) {
-	cmdArray := strings.Fields(command)
-	cmd := exec.Command(cmdArray[0], cmdArray[1:]...)
+	cmd := exec.Command("sh", "-c", command)
 	cmd.Stderr = os.Stderr
 	cmd.Stdout = os.Stdout
 	cmd.Stdin = os.Stdin
