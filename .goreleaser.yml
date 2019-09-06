@@ -19,7 +19,7 @@ before:
 
 brews:
   - github:
-      owner: dmirutbsov
+      owner: dmirubtsov
       name: tap
 
     name: mcli
