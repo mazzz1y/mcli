@@ -1,6 +1,5 @@
 env:
   - GO111MODULE=on
-  - GOPROXY="https://gocenter.io"
 
 builds:
   - binary: mcli
@@ -25,3 +24,18 @@ brews:
     name: mcli
     homepage: "https://github.com/dmirubtsov/mcli"
     description: "A simple shortcut menu for shell commands"
+
+nfpms:
+  - id: mcli
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+    vendor: Dmitry Rubtsov
+    homepage: https://github.com/dmirubtsov/mcli
+
+    maintainer: Dmitry Rubtsov <me@mazy.wtf>
+    description: A simple shortcut menu for shell commands.
+    license: MIT
+    formats:
+      - deb
+      - rpm
+    bindir: /usr/bin
