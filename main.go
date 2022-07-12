@@ -16,12 +16,10 @@ func main() {
 		log.Fatal(err)
 	}
 
-	app := cli.NewApp()
-	app.Name = "mcli"
-	app.Usage = "Shell command shortcut menu"
-	app.Version = version
-
-	app = &cli.App{
+	app := &cli.App{
+		Name:    "mcli",
+		Version: version,
+		Usage:   "Shell command shortcut menu",
 		Action: func(c *cli.Context) error {
 			index, err := selectItem(items)
 			if err != nil {
@@ -65,7 +63,7 @@ func main() {
 		},
 	}
 
-	if err := app.Run(os.Args); err != nil {
+	if err := app.Run(os.Args); err != nil && err.Error() != "^C" {
 		log.Fatal(err)
 	}
 }
