@@ -37,6 +37,7 @@ nfpms:
     description: A simple shortcut menu for shell commands.
     license: MIT
     formats:
+      - apk
       - deb
       - rpm
     bindir: /usr/bin
