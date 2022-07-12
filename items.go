@@ -21,7 +21,7 @@ func (is Items) add(i Item) error {
 		return err
 	}
 
-	return ioutil.WriteFile(configFilePath, file, 0644)
+	return ioutil.WriteFile(configFilePath, file, 0600)
 }
 
 func (is Items) delete(item Item) error {
@@ -33,7 +33,7 @@ func (is Items) delete(item Item) error {
 		return err
 	}
 
-	return ioutil.WriteFile(configFilePath, file, 0644)
+	return ioutil.WriteFile(configFilePath, file, 0600)
 }
 
 func (is Items) get() (Items, error) {
