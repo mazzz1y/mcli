@@ -36,15 +36,19 @@ func (is Items) delete(item Item) error {
 	return ioutil.WriteFile(configFilePath, file, 0600)
 }
 
-func (is Items) get() (Items, error) {
-	jsonFile, err := os.Open(configFilePath)
+func (is Items) get(file os.File) (Items, error) {
+	byteValue, err := ioutil.ReadAll(&file)
 	if err != nil {
 		return is, err
 	}
 
-	byteValue, err := ioutil.ReadAll(jsonFile)
-	if err != nil {
-		return is, err
+	if len(byteValue) == 0 {
+		emptyJson, err := json.Marshal(is)
+		if err != nil {
+			return is, err
+		}
+
+		return is, ioutil.WriteFile(configFilePath, emptyJson, 0600)
 	}
 
 	return is, json.Unmarshal(byteValue, &is)

@@ -11,7 +11,12 @@ var configFilePath = expandHomedir("~/.mcli.json")
 var version = "git"
 
 func main() {
-	items, err := Items{}.get()
+	file, err := os.OpenFile(configFilePath, os.O_RDONLY|os.O_CREATE, 0600)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	items, err := Items{}.get(*file)
 	if err != nil {
 		log.Fatal(err)
 	}
