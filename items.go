@@ -4,19 +4,21 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"sort"
 )
 
 type Item struct {
-	Name  string `json:"Name"`
-	Cmd   string `json:"Cmd"`
+	Name  string `json:"name"`
+	Cmd   string `json:"cmd"`
 	Index int    `json:"-"`
 }
 
 type Items []Item
 
 func (is Items) add(i Item) error {
-	is = append(is, i)
-	file, err := json.Marshal(is)
+	is = append(is, i).sort()
+
+	file, err := json.MarshalIndent(is, "", "  ")
 	if err != nil {
 		return err
 	}
@@ -26,9 +28,9 @@ func (is Items) add(i Item) error {
 
 func (is Items) delete(item Item) error {
 	is[item.Index] = is[len(is)-1]
-	is = is[:len(is)-1]
+	is = is[:len(is)-1].sort()
 
-	file, err := json.Marshal(is)
+	file, err := json.MarshalIndent(is, "", "  ")
 	if err != nil {
 		return err
 	}
@@ -52,4 +54,12 @@ func (is Items) get(file os.File) (Items, error) {
 	}
 
 	return is, json.Unmarshal(byteValue, &is)
+}
+
+func (is Items) sort() Items {
+	sort.Slice(is, func(i, j int) bool {
+		return is[i].Name < is[j].Name
+	})
+
+	return is
 }
