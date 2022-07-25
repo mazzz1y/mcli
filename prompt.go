@@ -2,8 +2,9 @@ package main
 
 import (
 	"errors"
-	"github.com/manifoldco/promptui"
 	"strings"
+
+	"github.com/manifoldco/promptui"
 )
 
 func prompt(label string) (string, error) {
@@ -38,28 +39,35 @@ func selectItem(items Items) (int, error) {
 	}
 
 	searcher := func(input string, index int) bool {
-		item := items[index]
-		name := strings.Replace(strings.ToLower(item.Name), " ", "", -1)
-		cmd := strings.Replace(strings.ToLower(item.Cmd), " ", "", -1)
-		input = strings.Replace(strings.ToLower(input), " ", "", -1)
-
-		return strings.Contains(name, input) || strings.Contains(cmd, input)
+		return searchMatch(items[index], input)
 	}
 
 	prompt := promptui.Select{
-		Label:     "Select Command:",
-		Items:     items,
-		Templates: templates,
-		Size:      10,
-		Searcher:  searcher,
+		Label:             "Select Command:",
+		Items:             items,
+		Templates:         templates,
+		Size:              10,
+		Searcher:          searcher,
+		StartInSearchMode: true,
 	}
-	prompt.StartInSearchMode = true
 
 	i, _, err := prompt.Run()
+	return i, err
+}
 
-	if err != nil {
-		return 0, err
+func searchMatch(item Item, input string) bool {
+	name := strings.ToLower(item.Name)
+	cmd := strings.ToLower(item.Cmd)
+	input = strings.ToLower(input)
+
+	for _, in := range strings.Split(input, " ") {
+		if strings.Contains(name, in) || strings.Contains(cmd, in) {
+			name = strings.ReplaceAll(name, in, "")
+			cmd = strings.ReplaceAll(cmd, in, "")
+		} else {
+			return false
+		}
 	}
 
-	return i, nil
+	return true
 }

@@ -1,5 +1,4 @@
 env:
-  - GO111MODULE=on
   - CGO_ENABLED=0
 
 builds:
@@ -11,10 +10,6 @@ builds:
       - amd64
       - arm
       - arm64
-
-before:
-  hooks:
-    - go mod tidy
 
 brews:
   - tap:
