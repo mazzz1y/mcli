@@ -4,7 +4,6 @@ go 1.18
 
 require (
 	github.com/manifoldco/promptui v0.9.0
-	github.com/mitchellh/go-homedir v1.1.0
 	github.com/riywo/loginshell v0.0.0-20200815045211-7d26008be1ab
 	github.com/stretchr/testify v1.8.0
 	github.com/urfave/cli/v2 v2.11.0

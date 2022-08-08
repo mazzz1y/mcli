@@ -1,23 +1,16 @@
 package main
 
 import (
-	"github.com/mitchellh/go-homedir"
 	"github.com/urfave/cli/v2"
 	"log"
 	"os"
 )
 
-var configFilePath = expandHomedir("~/.mcli.json")
 var version = "git"
 
 func main() {
-	file, err := os.OpenFile(configFilePath, os.O_RDONLY|os.O_CREATE, 0600)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	items, err := Items{}.get(*file)
-	if err != nil {
+	config := Config{}
+	if err := config.read(); err != nil {
 		log.Fatal(err)
 	}
 
@@ -26,12 +19,12 @@ func main() {
 		Version: version,
 		Usage:   "Shell command shortcut menu",
 		Action: func(c *cli.Context) error {
-			index, err := selectItem(items)
+			index, err := selectItem(config.Items, config.PromptSize)
 			if err != nil {
 				return err
 			}
 
-			return subprocess(items[index].Cmd)
+			return subprocess(config.Items[index].Cmd)
 		},
 		Commands: []*cli.Command{
 			{
@@ -49,7 +42,8 @@ func main() {
 						return err
 					}
 
-					return items.add(Item{Name: nameField, Cmd: commandField})
+					config.Items.add(Item{Name: nameField, Cmd: commandField})
+					return config.write()
 				},
 			},
 			{
@@ -57,12 +51,31 @@ func main() {
 				Aliases: []string{"d"},
 				Usage:   "Remove item",
 				Action: func(c *cli.Context) error {
-					index, err := selectItem(items)
+					index, err := selectItem(config.Items, config.PromptSize)
 					if err != nil {
 						return err
 					}
 
-					return items.delete(Item{Index: index})
+					config.Items.delete(Item{Index: index})
+					return config.write()
+				},
+			},
+			{
+				Name:    "prompt-size",
+				Aliases: []string{"p"},
+				Usage:   "Set prompt size",
+				Action: func(c *cli.Context) error {
+					size, err := prompt("Size")
+					if err != nil {
+						return err
+					}
+
+					err = config.setPromptSize(size)
+					if err != nil {
+						return err
+					}
+
+					return config.write()
 				},
 			},
 		},
@@ -71,12 +84,4 @@ func main() {
 	if err := app.Run(os.Args); err != nil && err.Error() != "^C" {
 		log.Fatal(err)
 	}
-}
-
-func expandHomedir(dir string) string {
-	dir, err := homedir.Expand(dir)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return dir
 }

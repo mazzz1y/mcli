@@ -30,7 +30,7 @@ func prompt(label string) (string, error) {
 	return prompt.Run()
 }
 
-func selectItem(items Items) (int, error) {
+func selectItem(items Items, size int) (int, error) {
 	templates := &promptui.SelectTemplates{
 		Label:    "{{ . }}",
 		Active:   "> {{ .Name | cyan }}",
@@ -46,7 +46,7 @@ func selectItem(items Items) (int, error) {
 		Label:             "Select Command:",
 		Items:             items,
 		Templates:         templates,
-		Size:              10,
+		Size:              size,
 		Searcher:          searcher,
 		StartInSearchMode: true,
 	}
