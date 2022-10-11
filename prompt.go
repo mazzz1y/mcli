@@ -35,7 +35,8 @@ func selectItem(items Items, size int) (int, error) {
 		Label:    "{{ . }}",
 		Active:   "> {{ .Name | cyan }}",
 		Inactive: "  {{ .Name | cyan }}",
-		Selected: "> {{ .Cmd }}",
+		Selected: "$ {{ .Cmd }}",
+		Details:  "$ {{ .Cmd }}",
 	}
 
 	searcher := func(input string, index int) bool {
