@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/urfave/cli/v2"
 	"log"
 	"os"
+
+	"github.com/urfave/cli/v2"
 )
 
 var version = "git"
@@ -42,6 +43,31 @@ func main() {
 						return err
 					}
 
+					config.Items.add(Item{Name: nameField, Cmd: commandField})
+					return config.write()
+				},
+			},
+			{
+				Name:    "edit",
+				Aliases: []string{"e"},
+				Usage:   "Edit item",
+				Action: func(c *cli.Context) error {
+					index, err := selectItem(config.Items, config.PromptSize)
+					if err != nil {
+						return err
+					}
+
+					nameField, err := prompt("Name")
+					if err != nil {
+						return err
+					}
+
+					commandField, err := prompt("Command")
+					if err != nil {
+						return err
+					}
+
+					config.Items.delete(Item{Index: index})
 					config.Items.add(Item{Name: nameField, Cmd: commandField})
 					return config.write()
 				},
