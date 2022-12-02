@@ -8,9 +8,9 @@ import (
 )
 
 var version = "git"
+var config = Config{}
 
 func main() {
-	config := Config{}
 	if err := config.read(); err != nil {
 		log.Fatal(err)
 	}

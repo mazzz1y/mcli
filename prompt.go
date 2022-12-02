@@ -2,9 +2,15 @@ package main
 
 import (
 	"errors"
+	"os"
 	"strings"
+	"text/template"
 
+	"github.com/charmbracelet/lipgloss"
+	"github.com/erikgeiser/promptkit"
+	"github.com/erikgeiser/promptkit/selection"
 	"github.com/manifoldco/promptui"
+	"github.com/muesli/termenv"
 )
 
 func prompt(label string) (string, error) {
@@ -31,42 +37,59 @@ func prompt(label string) (string, error) {
 }
 
 func selectItem(items Items, size int) (int, error) {
-	templates := &promptui.SelectTemplates{
-		Label:    "{{ . }}",
-		Active:   "> {{ .Name | cyan }}",
-		Inactive: "  {{ .Name | cyan }}",
-		Selected: "$ {{ .Cmd }}",
-		Details:  "$ {{ .Cmd }}",
+
+	var itemsNames []string
+
+	for _, item := range items {
+		itemsNames = append(itemsNames, item.Name)
 	}
 
-	searcher := func(input string, index int) bool {
-		return searchMatch(items[index], input)
+	sel := &selection.Selection{
+		Choices:                     selection.Choices(itemsNames),
+		FilterPrompt:                selection.DefaultFilterPrompt,
+		Template:                    selection.DefaultTemplate,
+		ResultTemplate:              selection.DefaultResultTemplate,
+		Filter:                      filter,
+		FilterInputPlaceholderStyle: lipgloss.NewStyle().Foreground(lipgloss.Color("240")),
+		SelectedChoiceStyle:         selection.DefaultSelectedChoiceStyle,
+		FinalChoiceStyle: func(c *selection.Choice) string {
+			return termenv.String(items[c.Index].Cmd).Foreground(termenv.ANSI256Color(32)).String()
+		},
+		KeyMap:                selection.NewDefaultKeyMap(),
+		FilterPlaceholder:     selection.DefaultFilterPlaceholder,
+		ExtendedTemplateFuncs: template.FuncMap{},
+		WrapMode:              promptkit.Truncate,
+		Output:                os.Stdout,
+		Input:                 os.Stdin,
+		PageSize:              10,
 	}
 
-	prompt := promptui.Select{
-		Label:             "Select Command:",
-		Items:             items,
-		Templates:         templates,
-		Size:              size,
-		Searcher:          searcher,
-		StartInSearchMode: true,
+	choice, err := sel.RunPrompt()
+	if err != nil {
+		return 0, err
 	}
 
-	i, _, err := prompt.Run()
-	return i, err
+	return choice.Index, err
 }
 
-func searchMatch(item Item, input string) bool {
-	name := strings.ToLower(item.Name)
-	cmd := strings.ToLower(item.Cmd)
-	input = strings.ToLower(input)
+func filter(filter string, choice *selection.Choice) bool {
+	name := strings.ToLower(config.Items[choice.Index].Name)
+	cmd := strings.ToLower(config.Items[choice.Index].Cmd)
+	filter = strings.ToLower(filter)
 
-	for _, in := range strings.Split(input, " ") {
-		if strings.Contains(name, in) || strings.Contains(cmd, in) {
+	for _, in := range strings.Split(filter, " ") {
+		match := false
+
+		if strings.Contains(name, in) {
 			name = strings.ReplaceAll(name, in, "")
+			match = true
+		} else if strings.Contains(cmd, in) {
 			cmd = strings.ReplaceAll(cmd, in, "")
-		} else {
-			return false
+			match = true
+		}
+
+		if !match {
+			return match
 		}
 	}
 
