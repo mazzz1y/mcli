@@ -37,15 +37,14 @@ func prompt(label string) (string, error) {
 }
 
 func selectItem(items Items, size int) (int, error) {
-
-	var itemsNames []string
+	var ch []*selection.Choice
 
 	for _, item := range items {
-		itemsNames = append(itemsNames, item.Name)
+		ch = append(ch, &selection.Choice{String: item.Name})
 	}
 
 	sel := &selection.Selection{
-		Choices:                     selection.Choices(itemsNames),
+		Choices:                     ch,
 		FilterPrompt:                selection.DefaultFilterPrompt,
 		Template:                    selection.DefaultTemplate,
 		ResultTemplate:              selection.DefaultResultTemplate,
@@ -61,7 +60,7 @@ func selectItem(items Items, size int) (int, error) {
 		WrapMode:              promptkit.Truncate,
 		Output:                os.Stdout,
 		Input:                 os.Stdin,
-		PageSize:              10,
+		PageSize:              config.PromptSize,
 	}
 
 	choice, err := sel.RunPrompt()
