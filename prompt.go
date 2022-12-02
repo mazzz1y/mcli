@@ -16,8 +16,12 @@ const template = `
   {{ Bold .Prompt }}
 {{ end -}}
 {{ if .IsFiltered }}
-  {{- print .FilterPrompt " " .FilterInput }}
+  {{- print "Filter: " " " .FilterInput }}
 {{ end }}
+{{- if not (eq (len .Choices) 0)}}
+{{- print "Command: " (index .Choices $.SelectedIndex).Value}}
+{{- print "\n"}}
+{{- end }}
 
 {{- range  $i, $choice := .Choices }}
   {{- if IsScrollUpHintPosition $i }}
@@ -29,19 +33,16 @@ const template = `
   {{- end -}}
 
   {{- if eq $.SelectedIndex $i }}
-   {{- print (Foreground "32" (Bold "▸ ")) (Selected $choice) "\n" }}
+   {{- print (Foreground "32" (Bold "~ ")) (Selected $choice) "\n" }}
   {{- else }}
 	{{- print "  " (Unselected $choice) "\n" }}
   {{- end }}
 {{- end}}
-{{- if not (eq (len .Choices) 0)}}
-{{(index .Choices $.SelectedIndex).Value}}
-{{- end }}
 `
 
 func prompt(label string) (string, error) {
 	input := textinput.New(label)
-	// input.Placeholder = "cannot be empty"
+	input.Placeholder = "cannot be empty"
 	return input.RunPrompt()
 }
 
@@ -49,12 +50,14 @@ func selectItem(items Items, size int) (int, error) {
 	var ch []*selection.Choice
 
 	for _, item := range items {
-		ch = append(ch, &selection.Choice{String: item.Name, Value: item.Cmd})
+		ch = append(ch, &selection.Choice{
+			String: item.Name,
+			Value:  termenv.String(item.Cmd).Foreground(termenv.ANSI256Color(240)).String(),
+		})
 	}
 
 	sel := &selection.Selection{
 		Choices:                     ch,
-		FilterPrompt:                selection.DefaultFilterPrompt,
 		Template:                    template,
 		ResultTemplate:              selection.DefaultResultTemplate,
 		Filter:                      filter,
@@ -65,11 +68,10 @@ func selectItem(items Items, size int) (int, error) {
 		},
 		KeyMap:            selection.NewDefaultKeyMap(),
 		FilterPlaceholder: selection.DefaultFilterPlaceholder,
-		// ExtendedTemplateFuncs: template.FuncMap{},
-		WrapMode: promptkit.Truncate,
-		Output:   os.Stdout,
-		Input:    os.Stdin,
-		PageSize: config.PromptSize,
+		WrapMode:          promptkit.Truncate,
+		Output:            os.Stdout,
+		Input:             os.Stdin,
+		PageSize:          config.PromptSize,
 	}
 
 	choice, err := sel.RunPrompt()
