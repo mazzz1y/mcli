@@ -1,52 +1,61 @@
 package main
 
 import (
-	"errors"
 	"os"
 	"strings"
-	"text/template"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/erikgeiser/promptkit"
 	"github.com/erikgeiser/promptkit/selection"
-	"github.com/manifoldco/promptui"
+	"github.com/erikgeiser/promptkit/textinput"
 	"github.com/muesli/termenv"
 )
 
+const template = `
+{{- if .Prompt -}}
+  {{ Bold .Prompt }}
+{{ end -}}
+{{ if .IsFiltered }}
+  {{- print .FilterPrompt " " .FilterInput }}
+{{ end }}
+
+{{- range  $i, $choice := .Choices }}
+  {{- if IsScrollUpHintPosition $i }}
+	{{- "⇡ " -}}
+  {{- else if IsScrollDownHintPosition $i -}}
+	{{- "⇣ " -}}
+  {{- else -}}
+	{{- "  " -}}
+  {{- end -}}
+
+  {{- if eq $.SelectedIndex $i }}
+   {{- print (Foreground "32" (Bold "▸ ")) (Selected $choice) "\n" }}
+  {{- else }}
+	{{- print "  " (Unselected $choice) "\n" }}
+  {{- end }}
+{{- end}}
+{{- if not (eq (len .Choices) 0)}}
+{{(index .Choices $.SelectedIndex).Value}}
+{{- end }}
+`
+
 func prompt(label string) (string, error) {
-	templates := &promptui.PromptTemplates{
-		Prompt:  "{{ . }} ",
-		Valid:   "{{ . }} ",
-		Invalid: "{{ . | red }} ",
-		Success: "{{ . | green }} ",
-	}
-
-	validate := func(input string) error {
-		if input != "" {
-			return nil
-		}
-		return errors.New(label + " cannot be empty")
-	}
-
-	prompt := promptui.Prompt{
-		Label:     label + ":",
-		Validate:  validate,
-		Templates: templates,
-	}
-	return prompt.Run()
+	input := textinput.New(label)
+	// input.Placeholder = "cannot be empty"
+	return input.RunPrompt()
 }
 
 func selectItem(items Items, size int) (int, error) {
 	var ch []*selection.Choice
 
 	for _, item := range items {
-		ch = append(ch, &selection.Choice{String: item.Name})
+		ch = append(ch, &selection.Choice{String: item.Name, Value: item.Cmd})
 	}
 
 	sel := &selection.Selection{
 		Choices:                     ch,
 		FilterPrompt:                selection.DefaultFilterPrompt,
-		Template:                    selection.DefaultTemplate,
+		Template:                    template,
 		ResultTemplate:              selection.DefaultResultTemplate,
 		Filter:                      filter,
 		FilterInputPlaceholderStyle: lipgloss.NewStyle().Foreground(lipgloss.Color("240")),
@@ -54,13 +63,13 @@ func selectItem(items Items, size int) (int, error) {
 		FinalChoiceStyle: func(c *selection.Choice) string {
 			return termenv.String(items[c.Index].Cmd).Foreground(termenv.ANSI256Color(32)).String()
 		},
-		KeyMap:                selection.NewDefaultKeyMap(),
-		FilterPlaceholder:     selection.DefaultFilterPlaceholder,
-		ExtendedTemplateFuncs: template.FuncMap{},
-		WrapMode:              promptkit.Truncate,
-		Output:                os.Stdout,
-		Input:                 os.Stdin,
-		PageSize:              config.PromptSize,
+		KeyMap:            selection.NewDefaultKeyMap(),
+		FilterPlaceholder: selection.DefaultFilterPlaceholder,
+		// ExtendedTemplateFuncs: template.FuncMap{},
+		WrapMode: promptkit.Truncate,
+		Output:   os.Stdout,
+		Input:    os.Stdin,
+		PageSize: config.PromptSize,
 	}
 
 	choice, err := sel.RunPrompt()
