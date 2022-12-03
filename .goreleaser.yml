@@ -13,20 +13,20 @@ builds:
 
 brews:
   - tap:
-      owner: dmirubtsov
+      owner: mazzz1y
       name: tap
 
     name: mcli
-    homepage: "https://github.com/dmirubtsov/mcli"
+    homepage: "https://github.com/mazzz1y/mcli"
     description: "A simple shortcut menu for shell commands"
 
 nfpms:
   - id: mcli
 
     vendor: Dmitry Rubtsov
-    homepage: https://github.com/dmirubtsov/mcli
+    homepage: https://github.com/mazzz1y/mcli
 
-    maintainer: Dmitry Rubtsov <me@mazy.wtf>
+    maintainer: mazzz1y <me@mazy.wtf>
     description: A simple shortcut menu for shell commands.
     license: MIT
     formats:

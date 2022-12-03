@@ -1,10 +1,11 @@
-package main
+package prompt
 
 import (
 	"fmt"
 	"strings"
 	"testing"
 
+	"github.com/dmirubtsov/mcli/pkg/items"
 	"github.com/erikgeiser/promptkit/selection"
 	"github.com/stretchr/testify/assert"
 )
@@ -13,13 +14,13 @@ func TestSelectionFilter(t *testing.T) {
 	name := []string{"one", "two", "three"}
 	cmd := []string{"four", "five", "six"}
 
-	item := Item{
+	item := items.Item{
 		Name: strings.Join(name, " "),
 		Cmd:  strings.Join(cmd, " "),
 	}
 
 	tt := []struct {
-		item   Item
+		item   items.Item
 		input  string
 		result bool
 	}{

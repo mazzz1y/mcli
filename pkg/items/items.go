@@ -1,4 +1,4 @@
-package main
+package items
 
 import (
 	"sort"
@@ -12,12 +12,12 @@ type Item struct {
 
 type Items []Item
 
-func (it *Items) add(i Item) {
+func (it *Items) Add(i Item) {
 	*it = append(*it, i)
 	it.sort()
 }
 
-func (it *Items) delete(i Item) {
+func (it *Items) Delete(i Item) {
 	a := *it
 	a[i.Index] = a[len(a)-1]
 	*it = a[:len(a)-1]

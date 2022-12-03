@@ -1,12 +1,13 @@
-package main
+package subprocess
 
 import (
-	"github.com/riywo/loginshell"
 	"os"
 	"os/exec"
+
+	"github.com/riywo/loginshell"
 )
 
-func subprocess(command string) error {
+func Exec(command string) error {
 	shell, err := loginshell.Shell()
 	if err != nil {
 		return err

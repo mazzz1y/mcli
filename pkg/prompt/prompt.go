@@ -1,23 +1,25 @@
-package main
+package prompt
 
 import (
+	"github.com/dmirubtsov/mcli/pkg/items"
 	"os"
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
+	"github.com/dmirubtsov/mcli/pkg/templates"
 	"github.com/erikgeiser/promptkit"
 	"github.com/erikgeiser/promptkit/selection"
 	"github.com/erikgeiser/promptkit/textinput"
 	"github.com/muesli/termenv"
 )
 
-func inputPrompt(label string) (string, error) {
+func InputPrompt(label string) (string, error) {
 	input := textinput.New(label + ":")
-	input.Placeholder = selectionInputPlaceholder
+	input.Placeholder = templates.SelectionInputPlaceholderText
 	return input.RunPrompt()
 }
 
-func selectionPrompt(items Items, size int) (int, error) {
+func SelectionPrompt(items items.Items, size int) (int, error) {
 	var choices []*selection.Choice
 
 	for _, item := range items {
@@ -29,8 +31,8 @@ func selectionPrompt(items Items, size int) (int, error) {
 
 	sel := &selection.Selection{
 		Choices:                     choices,
-		Template:                    selectionSelectTemplate,
-		ResultTemplate:              selectionResultTemplate,
+		Template:                    templates.SelectionSelectTemplate,
+		ResultTemplate:              templates.SelectionResultTemplate,
 		Filter:                      selectionFilter,
 		FilterInputPlaceholderStyle: lipgloss.NewStyle().Foreground(lipgloss.Color("240")),
 		SelectedChoiceStyle:         selection.DefaultSelectedChoiceStyle,
@@ -38,7 +40,7 @@ func selectionPrompt(items Items, size int) (int, error) {
 			return termenv.String(items[c.Index].Cmd).String()
 		},
 		KeyMap:            selection.NewDefaultKeyMap(),
-		FilterPlaceholder: selectionFilterPlaceholder,
+		FilterPlaceholder: templates.SelectionFilterPlaceholderText,
 		WrapMode:          promptkit.Truncate,
 		Output:            os.Stdout,
 		Input:             os.Stdin,

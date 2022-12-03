@@ -1,10 +1,9 @@
 module github.com/dmirubtsov/mcli
 
-go 1.18
+go 1.19
 
 require (
 	github.com/charmbracelet/lipgloss v0.5.0
-	github.com/manifoldco/promptui v0.9.0
 	github.com/muesli/termenv v0.12.0
 	github.com/riywo/loginshell v0.0.0-20200815045211-7d26008be1ab
 	github.com/stretchr/testify v1.8.0
@@ -27,7 +26,6 @@ require (
 )
 
 require (
-	github.com/chzyer/readline v1.5.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/erikgeiser/promptkit v0.7.0

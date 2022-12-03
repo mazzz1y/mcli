@@ -1,8 +1,8 @@
-package main
+package templates
 
-const selectionFilterPlaceholder = "type to filter choices"
-const selectionInputPlaceholder = "cannot be empty"
-const selectionSelectTemplate = `
+const SelectionFilterPlaceholderText = "type to filter choices"
+const SelectionInputPlaceholderText = "cannot be empty"
+const SelectionSelectTemplate = `
 {{- if .Prompt -}}
   {{ Bold .Prompt }}
 {{ end -}}
@@ -30,6 +30,6 @@ const selectionSelectTemplate = `
 
 {{- end}}
 `
-const selectionResultTemplate = `
+const SelectionResultTemplate = `
 {{- print (Final .FinalChoice) "\n" -}}
 `

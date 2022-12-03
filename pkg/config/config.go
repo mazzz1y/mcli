@@ -1,4 +1,4 @@
-package main
+package config
 
 import (
 	"encoding/json"
@@ -8,6 +8,8 @@ import (
 	"log"
 	"os"
 	"strconv"
+
+	"github.com/dmirubtsov/mcli/pkg/items"
 )
 
 const (
@@ -19,9 +21,8 @@ const (
 )
 
 type Config struct {
-	Version    string `json:"currentVersion"`
-	PromptSize int    `json:"promptSize"`
-	Items      Items  `json:"items,omitempty"`
+	PromptSize int         `json:"promptSize"`
+	Items      items.Items `json:"items,omitempty"`
 }
 
 var configFilePath string
@@ -46,7 +47,7 @@ func init() {
 	configFilePath = fmt.Sprintf("%s/%s", appDirPath, appConfigFileName)
 }
 
-func (c *Config) setPromptSize(size string) error {
+func (c *Config) SetPromptSize(size string) error {
 	s, err := strconv.ParseInt(size, 10, 0)
 	if err != nil {
 		return err
@@ -56,7 +57,7 @@ func (c *Config) setPromptSize(size string) error {
 	return err
 }
 
-func (c *Config) read() error {
+func (c *Config) Read() error {
 	file, err := os.OpenFile(configFilePath, os.O_RDONLY|os.O_CREATE, filePerm)
 	if err != nil {
 		return err
@@ -68,17 +69,16 @@ func (c *Config) read() error {
 	}
 
 	if len(cBytes) == 0 {
-		return c.write()
+		return c.Write()
 	}
 
 	return json.Unmarshal(cBytes, &c)
 }
 
-func (c *Config) write() error {
+func (c *Config) Write() error {
 	if c.PromptSize == 0 {
 		c.PromptSize = defaultPromptSize
 	}
-	c.Version = version
 
 	file, err := json.MarshalIndent(c, "", "  ")
 	if err != nil {
