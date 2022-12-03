@@ -2,11 +2,12 @@ package main
 
 import (
 	"errors"
-	"github.com/dmirubtsov/mcli/pkg/items"
-	"github.com/dmirubtsov/mcli/pkg/prompt"
-	"github.com/dmirubtsov/mcli/pkg/subprocess"
 	"log"
 	"os"
+
+	"github.com/dmirubtsov/mcli/pkg/prompt"
+	"github.com/dmirubtsov/mcli/pkg/shortcuts"
+	"github.com/dmirubtsov/mcli/pkg/subprocess"
 
 	"github.com/dmirubtsov/mcli/pkg/config"
 	"github.com/erikgeiser/promptkit"
@@ -24,20 +25,20 @@ func main() {
 	app := &cli.App{
 		Name:    "mcli",
 		Version: version,
-		Usage:   "Shell command shortcut menu",
+		Usage:   "Simple shortcut menu",
 		Action: func(c *cli.Context) error {
-			index, err := prompt.SelectionPrompt(config.Items, config.PromptSize)
+			index, err := prompt.SelectionPrompt(config.Shortcuts, config.PromptSize)
 			if err != nil {
 				return err
 			}
 
-			return subprocess.Exec(config.Items[index].Cmd)
+			return subprocess.Exec(config.Shortcuts[index].Cmd)
 		},
 		Commands: []*cli.Command{
 			{
 				Name:    "add",
 				Aliases: []string{"a"},
-				Usage:   "Add item",
+				Usage:   "Add shortcut",
 				Action: func(c *cli.Context) error {
 					nameField, err := prompt.InputPrompt("Name")
 					if err != nil {
@@ -49,16 +50,16 @@ func main() {
 						return err
 					}
 
-					config.Items.Add(items.Item{Name: nameField, Cmd: commandField})
+					config.Shortcuts.Add(shortcuts.Shortcut{Name: nameField, Cmd: commandField})
 					return config.Write()
 				},
 			},
 			{
 				Name:    "edit",
 				Aliases: []string{"e"},
-				Usage:   "Edit item",
+				Usage:   "Edit shortcut",
 				Action: func(c *cli.Context) error {
-					index, err := prompt.SelectionPrompt(config.Items, config.PromptSize)
+					index, err := prompt.SelectionPrompt(config.Shortcuts, config.PromptSize)
 					if err != nil {
 						return err
 					}
@@ -73,22 +74,22 @@ func main() {
 						return err
 					}
 
-					config.Items.Delete(items.Item{Index: index})
-					config.Items.Add(items.Item{Name: nameField, Cmd: commandField})
+					config.Shortcuts.Delete(shortcuts.Shortcut{Index: index})
+					config.Shortcuts.Add(shortcuts.Shortcut{Name: nameField, Cmd: commandField})
 					return config.Write()
 				},
 			},
 			{
 				Name:    "delete",
 				Aliases: []string{"d"},
-				Usage:   "Remove item",
+				Usage:   "Remove shortcut",
 				Action: func(c *cli.Context) error {
-					index, err := prompt.SelectionPrompt(config.Items, config.PromptSize)
+					index, err := prompt.SelectionPrompt(config.Shortcuts, config.PromptSize)
 					if err != nil {
 						return err
 					}
 
-					config.Items.Delete(items.Item{Index: index})
+					config.Shortcuts.Delete(shortcuts.Shortcut{Index: index})
 					return config.Write()
 				},
 			},

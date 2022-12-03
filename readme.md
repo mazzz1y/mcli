@@ -1,6 +1,6 @@
 # mcli
 
-A simple shortcut menu for shell commands
+Simple shortcut menu for shell commands
 
 ![](./.github/demo.gif)
 
@@ -30,8 +30,8 @@ USAGE:
    mcli [global options] command [command options] [arguments...]
 
 COMMANDS:
-   add, a          Add item
-   delete, d       Remove item
+   add, a          Add shortcut
+   delete, d       Remove shortcut
    prompt-size, p  Set prompt size
    help, h         Shows a list of commands or help for one command
 

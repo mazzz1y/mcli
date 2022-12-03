@@ -1,9 +1,11 @@
 package prompt
 
 import (
-	"github.com/dmirubtsov/mcli/pkg/items"
+	"errors"
 	"os"
 	"strings"
+
+	"github.com/dmirubtsov/mcli/pkg/shortcuts"
 
 	"github.com/charmbracelet/lipgloss"
 	"github.com/dmirubtsov/mcli/pkg/templates"
@@ -19,13 +21,17 @@ func InputPrompt(label string) (string, error) {
 	return input.RunPrompt()
 }
 
-func SelectionPrompt(items items.Items, size int) (int, error) {
+func SelectionPrompt(shortcuts shortcuts.Shortcuts, size int) (int, error) {
 	var choices []*selection.Choice
 
-	for _, item := range items {
+	if len(shortcuts) == 0 {
+		return 0, errors.New("please add your shortcuts first")
+	}
+
+	for _, shortcut := range shortcuts {
 		choices = append(choices, &selection.Choice{
-			String: item.Name,
-			Value:  termenv.String(item.Cmd).Foreground(termenv.ANSI256Color(240)).String(),
+			String: shortcut.Name,
+			Value:  termenv.String(shortcut.Cmd).Foreground(termenv.ANSI256Color(240)).String(),
 		})
 	}
 
@@ -37,7 +43,7 @@ func SelectionPrompt(items items.Items, size int) (int, error) {
 		FilterInputPlaceholderStyle: lipgloss.NewStyle().Foreground(lipgloss.Color("240")),
 		SelectedChoiceStyle:         selection.DefaultSelectedChoiceStyle,
 		FinalChoiceStyle: func(c *selection.Choice) string {
-			return termenv.String(items[c.Index].Cmd).String()
+			return termenv.String(shortcuts[c.Index].Cmd).String()
 		},
 		KeyMap:            selection.NewDefaultKeyMap(),
 		FilterPlaceholder: templates.SelectionFilterPlaceholderText,

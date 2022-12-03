@@ -9,7 +9,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/dmirubtsov/mcli/pkg/items"
+	"github.com/dmirubtsov/mcli/pkg/shortcuts"
 )
 
 const (
@@ -21,8 +21,8 @@ const (
 )
 
 type Config struct {
-	PromptSize int         `json:"promptSize"`
-	Items      items.Items `json:"items,omitempty"`
+	PromptSize int                 `json:"promptSize"`
+	Shortcuts  shortcuts.Shortcuts `json:"shortcuts,omitempty"`
 }
 
 var configFilePath string
