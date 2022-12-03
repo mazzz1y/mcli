@@ -8,7 +8,7 @@ const SelectionSelectTemplate = `
 {{ end -}}
 
 {{ if .IsFiltered }}
-  {{- print "Filter: " " " .FilterInput }}
+  {{- print "Filter: " .FilterInput }}
 {{ end }}
 
 {{- if not (eq (len .Choices) 0)}}
