@@ -11,67 +11,38 @@ import (
 	"github.com/muesli/termenv"
 )
 
-const template = `
-{{- if .Prompt -}}
-  {{ Bold .Prompt }}
-{{ end -}}
-{{ if .IsFiltered }}
-  {{- print "Filter: " " " .FilterInput }}
-{{ end }}
-{{- if not (eq (len .Choices) 0)}}
-{{- print "Command: " (index .Choices $.SelectedIndex).Value}}
-{{- print "\n"}}
-{{- end }}
-
-{{- range  $i, $choice := .Choices }}
-  {{- if IsScrollUpHintPosition $i }}
-	{{- "⇡ " -}}
-  {{- else if IsScrollDownHintPosition $i -}}
-	{{- "⇣ " -}}
-  {{- else -}}
-	{{- "  " -}}
-  {{- end -}}
-
-  {{- if eq $.SelectedIndex $i }}
-   {{- print (Foreground "32" (Bold "~ ")) (Selected $choice) "\n" }}
-  {{- else }}
-	{{- print "  " (Unselected $choice) "\n" }}
-  {{- end }}
-{{- end}}
-`
-
-func prompt(label string) (string, error) {
-	input := textinput.New(label)
-	input.Placeholder = "cannot be empty"
+func inputPrompt(label string) (string, error) {
+	input := textinput.New(label + ":")
+	input.Placeholder = selectionInputPlaceholder
 	return input.RunPrompt()
 }
 
-func selectItem(items Items, size int) (int, error) {
-	var ch []*selection.Choice
+func selectionPrompt(items Items, size int) (int, error) {
+	var choices []*selection.Choice
 
 	for _, item := range items {
-		ch = append(ch, &selection.Choice{
+		choices = append(choices, &selection.Choice{
 			String: item.Name,
 			Value:  termenv.String(item.Cmd).Foreground(termenv.ANSI256Color(240)).String(),
 		})
 	}
 
 	sel := &selection.Selection{
-		Choices:                     ch,
-		Template:                    template,
-		ResultTemplate:              selection.DefaultResultTemplate,
-		Filter:                      filter,
+		Choices:                     choices,
+		Template:                    selectionSelectTemplate,
+		ResultTemplate:              selectionResultTemplate,
+		Filter:                      selectionFilter,
 		FilterInputPlaceholderStyle: lipgloss.NewStyle().Foreground(lipgloss.Color("240")),
 		SelectedChoiceStyle:         selection.DefaultSelectedChoiceStyle,
 		FinalChoiceStyle: func(c *selection.Choice) string {
-			return termenv.String(items[c.Index].Cmd).Foreground(termenv.ANSI256Color(32)).String()
+			return termenv.String(items[c.Index].Cmd).String()
 		},
 		KeyMap:            selection.NewDefaultKeyMap(),
-		FilterPlaceholder: selection.DefaultFilterPlaceholder,
+		FilterPlaceholder: selectionFilterPlaceholder,
 		WrapMode:          promptkit.Truncate,
 		Output:            os.Stdout,
 		Input:             os.Stdin,
-		PageSize:          config.PromptSize,
+		PageSize:          size,
 	}
 
 	choice, err := sel.RunPrompt()
@@ -82,9 +53,9 @@ func selectItem(items Items, size int) (int, error) {
 	return choice.Index, err
 }
 
-func filter(filter string, choice *selection.Choice) bool {
-	name := strings.ToLower(config.Items[choice.Index].Name)
-	cmd := strings.ToLower(config.Items[choice.Index].Cmd)
+func selectionFilter(filter string, choice *selection.Choice) bool {
+	name := strings.ToLower(choice.String)
+	cmd := strings.ToLower(choice.Value.(string))
 	filter = strings.ToLower(filter)
 
 	for _, in := range strings.Split(filter, " ") {

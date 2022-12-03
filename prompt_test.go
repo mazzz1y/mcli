@@ -5,10 +5,11 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/erikgeiser/promptkit/selection"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSearchMatch(t *testing.T) {
+func TestSelectionFilter(t *testing.T) {
 	name := []string{"one", "two", "three"}
 	cmd := []string{"four", "five", "six"}
 
@@ -61,7 +62,9 @@ func TestSearchMatch(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.input, func(t *testing.T) {
-			assert.Equal(t, tc.result, searchMatch(tc.item, tc.input))
+			assert.Equal(t, tc.result, selectionFilter(tc.input, &selection.Choice{
+				String: tc.item.Name, Value: tc.item.Cmd,
+			}))
 		})
 	}
 }

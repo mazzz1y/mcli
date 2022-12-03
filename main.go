@@ -1,16 +1,18 @@
 package main
 
 import (
+	"errors"
 	"log"
 	"os"
 
+	"github.com/erikgeiser/promptkit"
 	"github.com/urfave/cli/v2"
 )
 
 var version = "git"
-var config = Config{}
 
 func main() {
+	var config = Config{}
 	if err := config.read(); err != nil {
 		log.Fatal(err)
 	}
@@ -20,7 +22,7 @@ func main() {
 		Version: version,
 		Usage:   "Shell command shortcut menu",
 		Action: func(c *cli.Context) error {
-			index, err := selectItem(config.Items, config.PromptSize)
+			index, err := selectionPrompt(config.Items, config.PromptSize)
 			if err != nil {
 				return err
 			}
@@ -33,12 +35,12 @@ func main() {
 				Aliases: []string{"a"},
 				Usage:   "Add item",
 				Action: func(c *cli.Context) error {
-					nameField, err := prompt("Name")
+					nameField, err := inputPrompt("Name")
 					if err != nil {
 						return err
 					}
 
-					commandField, err := prompt("Command")
+					commandField, err := inputPrompt("Command")
 					if err != nil {
 						return err
 					}
@@ -52,17 +54,17 @@ func main() {
 				Aliases: []string{"e"},
 				Usage:   "Edit item",
 				Action: func(c *cli.Context) error {
-					index, err := selectItem(config.Items, config.PromptSize)
+					index, err := selectionPrompt(config.Items, config.PromptSize)
 					if err != nil {
 						return err
 					}
 
-					nameField, err := prompt("Name")
+					nameField, err := inputPrompt("Name")
 					if err != nil {
 						return err
 					}
 
-					commandField, err := prompt("Command")
+					commandField, err := inputPrompt("Command")
 					if err != nil {
 						return err
 					}
@@ -77,7 +79,7 @@ func main() {
 				Aliases: []string{"d"},
 				Usage:   "Remove item",
 				Action: func(c *cli.Context) error {
-					index, err := selectItem(config.Items, config.PromptSize)
+					index, err := selectionPrompt(config.Items, config.PromptSize)
 					if err != nil {
 						return err
 					}
@@ -91,7 +93,7 @@ func main() {
 				Aliases: []string{"p"},
 				Usage:   "Set prompt size",
 				Action: func(c *cli.Context) error {
-					size, err := prompt("Size")
+					size, err := inputPrompt("Size")
 					if err != nil {
 						return err
 					}
@@ -107,7 +109,7 @@ func main() {
 		},
 	}
 
-	if err := app.Run(os.Args); err != nil && err.Error() != "^C" {
+	if err := app.Run(os.Args); err != nil && !errors.Is(err, promptkit.ErrAborted) {
 		log.Fatal(err)
 	}
 }
