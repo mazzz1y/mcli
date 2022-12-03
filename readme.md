@@ -15,7 +15,7 @@ A simple shortcut menu for shell commands
 #### macOS
 
 ```
-brew tap dmirubtsov/tap
+brew tap mazzz1y/tap
 brew install mcli
 ```
 
