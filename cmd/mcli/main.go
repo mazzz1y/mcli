@@ -13,7 +13,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-var Version = "git"
+var version = "git"
 
 func main() {
 	var config = config.Config{}
@@ -23,7 +23,7 @@ func main() {
 
 	app := &cli.App{
 		Name:    "mcli",
-		Version: Version,
+		Version: version,
 		Usage:   "Shell command shortcut menu",
 		Action: func(c *cli.Context) error {
 			index, err := prompt.SelectionPrompt(config.Items, config.PromptSize)
