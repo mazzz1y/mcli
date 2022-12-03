@@ -12,21 +12,21 @@ type Shortcut struct {
 
 type Shortcuts []Shortcut
 
-func (sh *Shortcuts) Add(i Shortcut) {
-	*sh = append(*sh, i)
-	sh.sort()
+func (ss *Shortcuts) Add(s Shortcut) {
+	*ss = append(*ss, s)
+	ss.sort()
 }
 
-func (sh *Shortcuts) Delete(i Shortcut) {
-	a := *sh
+func (ss *Shortcuts) Delete(i Shortcut) {
+	a := *ss
 	a[i.Index] = a[len(a)-1]
-	*sh = a[:len(a)-1]
-	sh.sort()
+	*ss = a[:len(a)-1]
+	ss.sort()
 }
 
-func (sh *Shortcuts) sort() {
-	sort.Slice(*sh, func(i, j int) bool {
-		a := *sh
+func (ss *Shortcuts) sort() {
+	sort.Slice(*ss, func(i, j int) bool {
+		a := *ss
 		return a[i].Name < a[j].Name
 	})
 }
