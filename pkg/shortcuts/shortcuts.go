@@ -17,9 +17,9 @@ func (ss *Shortcuts) Add(s Shortcut) {
 	ss.sort()
 }
 
-func (ss *Shortcuts) Delete(i Shortcut) {
+func (ss *Shortcuts) Delete(s Shortcut) {
 	a := *ss
-	a[i.Index] = a[len(a)-1]
+	a[s.Index] = a[len(a)-1]
 	*ss = a[:len(a)-1]
 	ss.sort()
 }

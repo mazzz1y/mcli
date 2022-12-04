@@ -11,6 +11,7 @@ builds:
       - amd64
       - arm
       - arm64
+
 brews:
   - tap:
       owner: mazzz1y
@@ -34,3 +35,15 @@ nfpms:
       - deb
       - rpm
     bindir: /usr/bin
+
+aurs:
+  - name: mcli-bin
+    homepage: "https://github.com/mazzz1y/mcli"
+    description: "Simple shortcut menu for shell commands."
+    maintainers:
+      - 'Dmitry Rubtsov <me@mazy.wtf>'
+    license: "MIT"
+    private_key: '{{ .Env.AUR_KEY }}'
+    git_url: 'ssh://aur@aur.archlinux.org/mcli-bin.git'
+    provides:
+      - mcli
