@@ -14,14 +14,20 @@ Simple shortcut menu for shell commands
 
 #### macOS
 
-```
+```bash
 brew tap mazzz1y/tap
 brew install mcli
 ```
 
-#### Linux
+#### Arch Linux
 
-DEB/RPM packages available on [Releases](https://github.com/mazzz1y/mcli/releases) page
+```bash
+paru -S mcli-bin
+```
+
+#### DEB/RPM
+
+Packages available on [Releases](https://github.com/mazzz1y/mcli/releases) page
 
 ## Usage
 
