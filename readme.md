@@ -25,9 +25,9 @@ brew install mcli
 paru -S mcli-bin
 ```
 
-#### DEB/RPM
+#### DEB/RPM/Alpine
 
-Packages available on [Releases](https://github.com/mazzz1y/mcli/releases) page
+Packages available on the [Releases](https://github.com/mazzz1y/mcli/releases) page
 
 ## Usage
 
