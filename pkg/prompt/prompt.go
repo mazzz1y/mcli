@@ -1,57 +1,44 @@
 package prompt
 
 import (
-	"errors"
-	"os"
-	"strings"
-
 	"github.com/dmirubtsov/mcli/pkg/shortcuts"
-
-	"github.com/charmbracelet/lipgloss"
-	"github.com/dmirubtsov/mcli/pkg/templates"
-	"github.com/erikgeiser/promptkit"
 	"github.com/erikgeiser/promptkit/selection"
 	"github.com/erikgeiser/promptkit/textinput"
-	"github.com/muesli/termenv"
+	"strconv"
 )
 
-func InputPrompt(label string) (string, error) {
+func InputPromptInt(label string) (string, error) {
 	input := textinput.New(label + ":")
-	input.Placeholder = templates.SelectionInputPlaceholderText
+	input.Placeholder = IntPlaceholderText
+	input.Validate = intValidator
+
 	return input.RunPrompt()
 }
 
-func SelectionPrompt(shortcuts shortcuts.Shortcuts, size int) (int, error) {
-	var choices []*selection.Choice
+func InputPromptString(label string) (string, error) {
+	input := textinput.New(label + ":")
+	input.Placeholder = StringPlaceholderText
 
-	if len(shortcuts) == 0 {
-		return 0, errors.New("please add your shortcuts first")
-	}
+	return input.RunPrompt()
+}
 
-	for _, shortcut := range shortcuts {
-		choices = append(choices, &selection.Choice{
-			String: shortcut.Name,
-			Value:  termenv.String(shortcut.Cmd).Foreground(termenv.ANSI256Color(240)).String(),
-		})
+func SelectionPrompt(ss shortcuts.Shortcuts, size int) (int, error) {
+	sel := selection.New("", ss)
+	sel.Template = SelectionSelectTemplate
+	sel.ResultTemplate = SelectionResultTemplate
+	sel.FilterPlaceholder = filterPlaceholderText
+	sel.Filter = selectionFilter
+	sel.SelectedChoiceStyle = selectedChoiceStyle
+	sel.UnselectedChoiceStyle = unselectedChoiceStyle
+	sel.FinalChoiceStyle = finalChoiceStyle
+	sel.ExtendedTemplateFuncs = map[string]interface{}{
+		"CommandStyle":       commandStyle,
+		"CommandPromptStyle": commandPromptStyle,
+		"FilterPromptStyle":  filterPromptStyle,
+		"UpDownSymbolStyle":  upDownSymbolStyle,
+		"FinalSymbolStyle":   finalSymbolStyle,
 	}
-
-	sel := &selection.Selection{
-		Choices:                     choices,
-		Template:                    templates.SelectionSelectTemplate,
-		ResultTemplate:              templates.SelectionResultTemplate,
-		Filter:                      selectionFilter,
-		FilterInputPlaceholderStyle: lipgloss.NewStyle().Foreground(lipgloss.Color("240")),
-		SelectedChoiceStyle:         selection.DefaultSelectedChoiceStyle,
-		FinalChoiceStyle: func(c *selection.Choice) string {
-			return termenv.String(shortcuts[c.Index].Cmd).String()
-		},
-		KeyMap:            selection.NewDefaultKeyMap(),
-		FilterPlaceholder: templates.SelectionFilterPlaceholderText,
-		WrapMode:          promptkit.Truncate,
-		Output:            os.Stdout,
-		Input:             os.Stdin,
-		PageSize:          size,
-	}
+	sel.PageSize = size
 
 	choice, err := sel.RunPrompt()
 	if err != nil {
@@ -61,26 +48,10 @@ func SelectionPrompt(shortcuts shortcuts.Shortcuts, size int) (int, error) {
 	return choice.Index, err
 }
 
-func selectionFilter(filter string, choice *selection.Choice) bool {
-	name := strings.ToLower(choice.String)
-	cmd := strings.ToLower(choice.Value.(string))
-	filter = strings.ToLower(filter)
-
-	for _, in := range strings.Split(filter, " ") {
-		match := false
-
-		if strings.Contains(name, in) {
-			name = strings.ReplaceAll(name, in, "")
-			match = true
-		} else if strings.Contains(cmd, in) {
-			cmd = strings.ReplaceAll(cmd, in, "")
-			match = true
-		}
-
-		if !match {
-			return match
-		}
+func intValidator(s string) error {
+	if i, err := strconv.Atoi(s); err != nil || i < 0 {
+		return textinput.ErrInputValidation
 	}
 
-	return true
+	return nil
 }

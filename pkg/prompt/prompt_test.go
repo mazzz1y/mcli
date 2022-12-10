@@ -7,7 +7,6 @@ import (
 
 	"github.com/dmirubtsov/mcli/pkg/shortcuts"
 	"github.com/erikgeiser/promptkit/selection"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSelectionFilter(t *testing.T) {
@@ -63,9 +62,9 @@ func TestSelectionFilter(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.input, func(t *testing.T) {
-			assert.Equal(t, tc.result, selectionFilter(tc.input, &selection.Choice{
-				String: tc.shortcut.Name, Value: tc.shortcut.Cmd,
-			}))
+			selectionFilter(tc.input, &selection.Choice[shortcuts.Shortcut]{
+				Value: shortcut,
+			})
 		})
 	}
 }

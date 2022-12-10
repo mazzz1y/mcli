@@ -72,7 +72,16 @@ func (c *Config) Read() error {
 		return c.Write()
 	}
 
-	return json.Unmarshal(cBytes, &c)
+	err = json.Unmarshal(cBytes, &c)
+	if err != nil {
+		return err
+	}
+
+	for i := range c.Shortcuts {
+		c.Shortcuts[i].Index = i
+	}
+
+	return nil
 }
 
 func (c *Config) Write() error {
@@ -86,4 +95,23 @@ func (c *Config) Write() error {
 	}
 
 	return os.WriteFile(configFilePath, file, filePerm)
+}
+
+func (c *Config) WriteDemo() error {
+	c.Shortcuts = []shortcuts.Shortcut{
+		{
+			Name: "Demo Command 1",
+			Cmd:  "echo test1",
+		},
+		{
+			Name: "Demo Command 2",
+			Cmd:  "echo test2",
+		},
+		{
+			Name: "Demo Command 3",
+			Cmd:  "echo test3",
+		},
+	}
+
+	return c.Write()
 }
