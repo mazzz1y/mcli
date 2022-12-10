@@ -12,13 +12,6 @@ Simple shortcut menu for shell commands
 
 ## Installation
 
-#### macOS
-
-```bash
-brew tap mazzz1y/tap
-brew install mcli
-```
-
 #### Arch Linux
 
 ```bash
@@ -28,6 +21,13 @@ paru -S mcli-bin
 #### DEB/RPM/Alpine
 
 Packages available on the [Releases](https://github.com/mazzz1y/mcli/releases) page
+
+#### macOS
+
+```bash
+brew tap mazzz1y/tap
+brew install mcli
+```
 
 ## Usage
 

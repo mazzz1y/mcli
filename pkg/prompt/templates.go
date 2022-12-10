@@ -1,6 +1,6 @@
 package prompt
 
-const SelectionSelectTemplate = `
+const selectionSelectTemplate = `
 {{- if .Prompt -}}
   {{ Bold .Prompt }}
 {{ end -}}
@@ -27,6 +27,6 @@ const SelectionSelectTemplate = `
   {{- end }}
 {{- end}}
 `
-const SelectionResultTemplate = `
+const selectionResultTemplate = `
 {{- print FinalSymbolStyle " " (Final .FinalChoice) "\n" -}}
 `

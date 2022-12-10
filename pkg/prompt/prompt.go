@@ -1,10 +1,11 @@
 package prompt
 
 import (
+	"strconv"
+
 	"github.com/dmirubtsov/mcli/pkg/shortcuts"
 	"github.com/erikgeiser/promptkit/selection"
 	"github.com/erikgeiser/promptkit/textinput"
-	"strconv"
 )
 
 func InputPromptInt(label string) (string, error) {
@@ -24,8 +25,8 @@ func InputPromptString(label string) (string, error) {
 
 func SelectionPrompt(ss shortcuts.Shortcuts, size int) (int, error) {
 	sel := selection.New("", ss)
-	sel.Template = SelectionSelectTemplate
-	sel.ResultTemplate = SelectionResultTemplate
+	sel.Template = selectionSelectTemplate
+	sel.ResultTemplate = selectionResultTemplate
 	sel.FilterPlaceholder = filterPlaceholderText
 	sel.Filter = selectionFilter
 	sel.SelectedChoiceStyle = selectedChoiceStyle
