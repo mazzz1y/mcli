@@ -8,17 +8,19 @@ import (
 	"github.com/erikgeiser/promptkit/textinput"
 )
 
-func InputPromptInt(label string) (string, error) {
+func InputPromptInt(label string, initValue int) (string, error) {
 	input := textinput.New(label + ":")
 	input.Placeholder = IntPlaceholderText
 	input.Validate = intValidator
+	input.InitialValue = strconv.Itoa(initValue)
 
 	return input.RunPrompt()
 }
 
-func InputPromptString(label string) (string, error) {
+func InputPromptString(label string, initValue string) (string, error) {
 	input := textinput.New(label + ":")
 	input.Placeholder = StringPlaceholderText
+	input.InitialValue = initValue
 
 	return input.RunPrompt()
 }

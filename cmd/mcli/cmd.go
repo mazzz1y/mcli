@@ -24,12 +24,12 @@ func run(*cli.Context) error {
 }
 
 func add(*cli.Context) error {
-	nameField, err := prompt.InputPromptString(nameFieldText)
+	nameField, err := prompt.InputPromptString(nameFieldText, "")
 	if err != nil {
 		return err
 	}
 
-	commandField, err := prompt.InputPromptString(commandFieldText)
+	commandField, err := prompt.InputPromptString(commandFieldText, "")
 	if err != nil {
 		return err
 	}
@@ -44,12 +44,12 @@ func edit(*cli.Context) error {
 		return err
 	}
 
-	nameField, err := prompt.InputPromptString(nameFieldText)
+	nameField, err := prompt.InputPromptString(nameFieldText, cfg.Shortcuts[index].Name)
 	if err != nil {
 		return err
 	}
 
-	commandField, err := prompt.InputPromptString(commandFieldText)
+	commandField, err := prompt.InputPromptString(commandFieldText, cfg.Shortcuts[index].Cmd)
 	if err != nil {
 		return err
 	}
@@ -70,7 +70,7 @@ func delete(*cli.Context) error {
 }
 
 func setPromptSize(*cli.Context) error {
-	size, err := prompt.InputPromptInt(sizeFieldText)
+	size, err := prompt.InputPromptInt(sizeFieldText, cfg.PromptSize)
 	if err != nil {
 		return err
 	}
