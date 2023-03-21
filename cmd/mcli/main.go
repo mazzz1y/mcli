@@ -5,7 +5,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/dmirubtsov/mcli/pkg/config"
+	"github.com/dmirubtsov/mcli/internal/config"
 	"github.com/erikgeiser/promptkit"
 	"github.com/urfave/cli/v2"
 )

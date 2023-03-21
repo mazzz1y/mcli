@@ -2,10 +2,11 @@ package prompt
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"strings"
 	"testing"
 
-	"github.com/dmirubtsov/mcli/pkg/shortcuts"
+	"github.com/dmirubtsov/mcli/internal/shortcuts"
 	"github.com/erikgeiser/promptkit/selection"
 )
 
@@ -62,9 +63,9 @@ func TestSelectionFilter(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.input, func(t *testing.T) {
-			selectionFilter(tc.input, &selection.Choice[shortcuts.Shortcut]{
+			assert.Equal(t, selectionFilter(tc.input, &selection.Choice[shortcuts.Shortcut]{
 				Value: shortcut,
-			})
+			}), tc.result)
 		})
 	}
 }

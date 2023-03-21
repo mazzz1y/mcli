@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/dmirubtsov/mcli/pkg/prompt"
-	"github.com/dmirubtsov/mcli/pkg/shortcuts"
-	"github.com/dmirubtsov/mcli/pkg/subprocess"
+	"github.com/dmirubtsov/mcli/internal/prompt"
+	"github.com/dmirubtsov/mcli/internal/shortcuts"
+	"github.com/dmirubtsov/mcli/internal/subprocess"
 	"github.com/urfave/cli/v2"
 )
 

@@ -9,7 +9,7 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/dmirubtsov/mcli/pkg/shortcuts"
+	"github.com/dmirubtsov/mcli/internal/shortcuts"
 )
 
 const (
