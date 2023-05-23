@@ -1,7 +1,7 @@
 package prompt
 
 import (
-	"github.com/dmirubtsov/mcli/internal/shortcuts"
+	"github.com/mazzz1y/mcli/internal/shortcuts"
 	"github.com/erikgeiser/promptkit/selection"
 	"strings"
 )

@@ -1,9 +1,10 @@
 package main
 
 const (
-	nameFieldText      = "Name"
-	commandFieldText   = "Command"
-	sizeFieldText      = "Size"
+	namePromptText     = "Name"
+	commandPromptText  = "Command"
+	envPromptText      = "Environment Variable"
+	sizePromptText     = "Size"
 	addShortcutText    = "Add shortcut"
 	editShortcutText   = "Edit shortcut"
 	removeShortcutText = "Remove shortcut"

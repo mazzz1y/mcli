@@ -1,19 +1,20 @@
 package prompt
 
 import (
-	"github.com/dmirubtsov/mcli/internal/shortcuts"
 	"github.com/erikgeiser/promptkit/selection"
+	"github.com/mazzz1y/mcli/internal/shortcuts"
 	"github.com/muesli/termenv"
 )
 
 const (
-	StringPlaceholderText = "cannot be empty"
-	IntPlaceholderText    = "should be positive integer, 0 is unlimited"
+	envPlaceholderText    = "key=value, empty string to end input"
+	stringPlaceholderText = "cannot be empty"
+	intPlaceholderText    = "should be positive integer, 0 is unlimited"
 	filterPlaceholderText = "type to filter choices"
+	commandText           = "Command"
+	filterText            = "Filter"
 	upDownSymbolText      = "•"
 	finalSymbolText       = "$"
-	CommandText           = "Command"
-	FilterText            = "Filter"
 )
 
 func selectedChoiceStyle(c *selection.Choice[shortcuts.Shortcut]) string {
@@ -33,11 +34,11 @@ func commandStyle(c *selection.Choice[shortcuts.Shortcut]) string {
 }
 
 func commandPromptStyle() string {
-	return termenv.String(CommandText).Faint().String()
+	return termenv.String(commandText).Faint().String()
 }
 
 func filterPromptStyle() string {
-	return termenv.String(FilterText).Faint().String()
+	return termenv.String(filterText).Faint().String()
 }
 
 func upDownSymbolStyle() string {

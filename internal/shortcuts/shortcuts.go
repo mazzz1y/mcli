@@ -7,7 +7,13 @@ import (
 type Shortcut struct {
 	Name  string `json:"name"`
 	Cmd   string `json:"cmd"`
+	Envs  []Env  `json:"env,omitempty"`
 	Index int    `json:"-"`
+}
+
+type Env struct {
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 type Shortcuts []Shortcut

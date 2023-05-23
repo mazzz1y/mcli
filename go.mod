@@ -1,4 +1,4 @@
-module github.com/dmirubtsov/mcli
+module github.com/mazzz1y/mcli
 
 go 1.19
 
